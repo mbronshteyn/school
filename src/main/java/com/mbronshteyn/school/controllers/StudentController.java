@@ -1,9 +1,11 @@
 package com.mbronshteyn.school.controllers;
 
+import com.mbronshteyn.school.model.request.StudentRest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +18,8 @@ public class StudentController {
   }
 
   @PostMapping
-  public String postStudent(){
-    return "post student was called";
+  public StudentRest postStudent(@RequestBody StudentRest studentRest){
+    return studentRest;
   }
 
   @DeleteMapping
