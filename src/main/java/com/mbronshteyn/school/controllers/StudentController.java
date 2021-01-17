@@ -33,7 +33,9 @@ public class StudentController {
     StudentDto studentDto = new StudentDto();
     BeanUtils.copyProperties(studentRest, studentDto);
 
-    BeanUtils.copyProperties(studentDto, returnValue);
+    StudentDto response = studentService.createStudent(studentDto);
+
+    BeanUtils.copyProperties(response, returnValue);
 
     return returnValue;
   }

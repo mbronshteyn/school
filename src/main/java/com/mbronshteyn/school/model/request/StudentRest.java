@@ -20,6 +20,5 @@ public class StudentRest {
   String lastName;
   String grade;
   String email;
-  @JsonIgnore
   String password;
 }
