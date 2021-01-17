@@ -5,32 +5,36 @@ import com.mbronshteyn.school.model.dto.StudentDto;
 import com.mbronshteyn.school.repository.StudentRepository;
 import com.mbronshteyn.school.service.StudentService;
 import com.mbronshteyn.school.util.EncryptUtil;
-import org.springframework.beans.BeanUtils;
+import io.beanmapper.config.BeanMapperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-  @Autowired
-  EncryptUtil encryptUtil;
+  @Autowired EncryptUtil encryptUtil;
 
-  @Autowired
-  private StudentRepository studentRepository;
+  @Autowired private StudentRepository studentRepository;
 
   @Override
   public StudentDto createStudent(StudentDto studentDto) {
-
-    StudentEntity studentEntity = new StudentEntity();
-
-    BeanUtils.copyProperties(studentDto, studentEntity);
+    StudentEntity studentEntity =
+        new BeanMapperBuilder().build().map(studentDto, StudentEntity.class);
     studentEntity.setEncryptedPassword(encryptUtil.caesarCipherEncrypt(studentDto.getPassword()));
 
     StudentEntity responseEntity = studentRepository.save(studentEntity);
 
-    StudentDto result = new StudentDto();
-    BeanUtils.copyProperties(responseEntity, result);
+    return new BeanMapperBuilder().build().map(responseEntity, StudentDto.class);
+  }
 
-    return result;
+  @Override
+  public List<StudentDto> getStudents() {
+    return StreamSupport.stream(studentRepository.findAll().spliterator(), false)
+        .map(i -> new BeanMapperBuilder().build().map(i, StudentDto.class))
+        .collect(Collectors.toList());
   }
 }
